@@ -9,3 +9,4 @@ dotenvy = "0.15.6"
 sea-orm = { version = "0.11.0", features = ["sqlx-postgres", "runtime-tokio-rustls"] }
 serde = "1.0.152"
 tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread"] }
+tower-http = { version = "0.4.0", features = ["cors"] }
