@@ -7,7 +7,7 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub date: DateTimeWithTimeZone,
+    pub date_time: DateTimeWithTimeZone,
     pub title: String,
     #[sea_orm(column_type = "Text")]
     pub content: String,

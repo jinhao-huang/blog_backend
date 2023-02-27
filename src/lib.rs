@@ -7,7 +7,7 @@ use serde::Serialize;
 #[derive(Serialize)]
 pub struct PostInfo {
     title: String,
-    date: DateTime,
+    date_time: DateTime,
     content: String,
 }
 
@@ -38,7 +38,7 @@ async fn get_post(
     if let Some(post) = post {
         Ok(Json(PostInfo {
             title: post.title,
-            date: post.date.naive_utc(),
+            date_time: post.date_time.naive_utc(),
             content: post.content,
         }))
     } else {
