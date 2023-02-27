@@ -1,14 +1,14 @@
 mod database;
 use crate::database::posts::Entity as Post;
 use axum::{extract::Path, http::StatusCode, routing::get, Extension, Json, Router};
-use sea_orm::{prelude::DateTime, Database, DatabaseConnection, EntityTrait};
+use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection, EntityTrait};
 use serde::Serialize;
 use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Serialize)]
 pub struct PostInfo {
     title: String,
-    date_time: DateTime,
+    date_time: DateTimeWithTimeZone,
     content: String,
 }
 
@@ -42,7 +42,7 @@ async fn get_post(
     if let Some(post) = post {
         Ok(Json(PostInfo {
             title: post.title,
-            date_time: post.date_time.naive_utc(),
+            date_time: post.date_time,
             content: post.content,
         }))
     } else {
