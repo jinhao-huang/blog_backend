@@ -3,6 +3,7 @@ use crate::database::posts::Entity as Post;
 use axum::{extract::Path, http::StatusCode, routing::get, Extension, Json, Router};
 use sea_orm::{prelude::DateTime, Database, DatabaseConnection, EntityTrait};
 use serde::Serialize;
+use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Serialize)]
 pub struct PostInfo {
@@ -14,10 +15,13 @@ pub struct PostInfo {
 pub async fn run(database_url: String) {
     let database = connect_database(database_url).await;
 
+    let cors = CorsLayer::new().allow_origin(Any);
+
     let app = Router::new()
         .route("/", get(|| async { "Hi, friend!" }))
         .route("/post/:post_id", get(get_post))
-        .layer(Extension(database));
+        .layer(Extension(database))
+        .layer(cors);
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
