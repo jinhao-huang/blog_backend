@@ -12,6 +12,13 @@ pub struct PostInfo {
     content: String,
 }
 
+#[derive(Serialize)]
+pub struct PostDescription {
+    title: String,
+    date_time: DateTimeWithTimeZone,
+    description: String,
+}
+
 pub async fn run(database_url: String) {
     let database = connect_database(database_url).await;
 
@@ -20,6 +27,7 @@ pub async fn run(database_url: String) {
     let app = Router::new()
         .route("/", get(|| async { "Hi, friend!" }))
         .route("/post/:post_id", get(get_post))
+        .route("/posts", get(get_posts))
         .layer(Extension(database))
         .layer(cors);
 
@@ -47,5 +55,24 @@ async fn get_post(
         }))
     } else {
         Err(StatusCode::NOT_FOUND)
+    }
+}
+
+async fn get_posts(
+    Extension(database): Extension<DatabaseConnection>,
+) -> Result<Json<Vec<PostDescription>>, StatusCode> {
+    let posts_model = Post::find().all(&database).await.unwrap();
+    let mut posts = Vec::new();
+    for post in posts_model {
+        posts.push(PostDescription {
+            title: post.title,
+            date_time: post.date_time,
+            description: post.description,
+        });
+    }
+    if posts.len() == 0 {
+        Err(StatusCode::NOT_FOUND)
+    } else {
+        Ok(Json(posts))
     }
 }
