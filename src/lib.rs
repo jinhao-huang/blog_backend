@@ -14,6 +14,7 @@ pub struct PostInfo {
 
 #[derive(Serialize)]
 pub struct PostDescription {
+    id: i32,
     title: String,
     date_time: DateTimeWithTimeZone,
     description: String,
@@ -65,6 +66,7 @@ async fn get_posts(
     let mut posts = Vec::new();
     for post in posts_model {
         posts.push(PostDescription {
+            id: post.id,
             title: post.title,
             date_time: post.date_time,
             description: post.description,
